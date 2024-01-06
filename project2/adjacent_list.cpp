@@ -20,18 +20,13 @@ void adjacent_list::read_adjacent_city_file()
                 std::string select_city;
                 std::vector<City> obj;
 
-                if (std::getline(iss, select_city, ',')) { // takes the first parameter which is the city name
+                while (std::getline(iss, select_city, ',')) { // takes the rest of the parameters which are the neighbors of the city
                     std::transform(select_city.begin(), select_city.end(), select_city.begin(), ::tolower);
                     obj.emplace_back(select_city);
-
-                    std::string neighbor;
-                    while (std::getline(iss, neighbor, ',')) { // takes the rest of the parameters which are the neighbors of the city
-                        std::transform(neighbor.begin(), neighbor.end(), neighbor.begin(), ::tolower);
-                        obj.emplace_back(neighbor);
-                    }
-                    city_list.push_back(select_city);
-                    cities_.emplace_back(obj);  // Create new city objects 
                 }
+            	city_list.push_back(obj[0].city_name_); // Current city rest their neighbors
+            	cities_.emplace_back(obj);  // Create neighbors
+                
             }
             file.close();
         }
@@ -42,7 +37,6 @@ void adjacent_list::read_adjacent_city_file()
 void adjacent_list::read_city_distance_file(std::vector<std::vector<City>>& Cities_)
 {
     std::ifstream file("CityDistances.txt");
-
 
     if (file.is_open()) {
         std::string line;
@@ -63,16 +57,16 @@ void adjacent_list::read_city_distance_file(std::vector<std::vector<City>>& Citi
                     while (std::getline(iss, dst, ';')) // takes the rest of the parameters which are the neighbors of the city
                     {
                         size_t j{ 0 }, flag{ 0 };
-                        while (j != Cities_[idx].size())
+                        while (j != Cities_[idx].size()) // Number of current city's neighbors
                         {
-                            if (city_list[i] == Cities_[idx][j].city_name_) { flag = 1; break; }
-                            j++;
+                            if (city_list[i] == Cities_[idx][j].city_name_) { flag = 1; break; } // If the city is in the current city neighbors then we'll add
+                            j++;                                                                 
                         }
 
                         i++;
-                        if (flag == 1) { Cities_[idx][j].distance = std::stoi(dst); }
+                        if (flag == 1) { Cities_[idx][j].distance = std::stoi(dst); } // If the city is in the current city neighbors we add it by changing str to int
                     }
-                    idx++;
+                    idx++; // next line
                 }
 
             }

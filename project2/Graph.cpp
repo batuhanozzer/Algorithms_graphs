@@ -7,7 +7,7 @@ struct compare_Distances
 {
 	bool operator()(const City& obj1, const City& obj2) const {
 		// Sort based on distance
-		return obj1.distance > obj2.distance;
+		return obj1.distance > obj2.distance;	// if true than obj2 has higher priority so we set ascending order
 	}
 };
 
@@ -82,7 +82,7 @@ void Graph::choose_k_number()
 	k_number = number;
 }
 
-void Graph::find_k_closest_cities()
+void Graph::find_k_closest_cities() // Implemented Uniform Cost Search Algorithm
 {
 	choose_k_number();
 	int counter = k_number + 1;
@@ -90,7 +90,7 @@ void Graph::find_k_closest_cities()
 	std::priority_queue<City, std::vector<City>, compare_Distances> priority_queue;	// Store city type, and sort according to distance
 
 	if (selected_city.empty()) choose_city();	// If user didn't choice the current city send him to choose it
-	priority_queue.emplace(selected_city);		// Start with the current city
+	priority_queue.emplace(selected_city);		// Start with the selected city
 
 	while (counter != 0)
 	{
@@ -109,7 +109,7 @@ void Graph::find_k_closest_cities()
 			for (size_t i{ 1 }; i < neighbors.size(); i++)
 			{
 				if (find_Idx(visited, neighbors[i].city_name_) == -1) priority_queue.push(City(neighbors[i].city_name_, neighbors[i].distance + parent.distance));
-			}	// Push the neighbors which doesn't visited before to the priority queue
+			}	// Expand part,Push the neighbors which doesn't visited before to the priority queue
 
 
 			counter--;
@@ -121,7 +121,7 @@ void Graph::find_k_closest_cities()
 	std::cout << std::endl;
 }
 
-void Graph::find_shortest_path()
+void Graph::find_shortest_path() // Implemented A* search algorithm
 {
 	std::vector<std::vector<City>> heuristic_matrix;
 	std::vector<City> temp;
@@ -139,7 +139,7 @@ void Graph::find_shortest_path()
 	*	.
 	*	adana:0, adiyaman:0, ..., duzce:0
 	*/
-	read_city_distance_file(heuristic_matrix);	//Set the values
+	read_city_distance_file(heuristic_matrix);	//Set the distance values
 
 	std::vector<City> visited;
 	std::priority_queue<City, std::vector<City>, compare_Distances> priority_queue;	// Store city type, and sort according to distance
@@ -149,7 +149,7 @@ void Graph::find_shortest_path()
 	choose_destination();	// Choose the destination
 	priority_queue.emplace(selected_city);		// Start with the current city
 
-	while (find_Idx(visited,destination_city) == -1)
+	while (find_Idx(visited,destination_city) == -1)  // Goal state (destination) visited stop search
 	{
 		std::vector<City> neighbors;
 		std::vector<int> distance;
